@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Countdown from '../components/Countdown'
+import { useAuth } from '../lib/useAuth'
 
 const whyBaspCards = [
   {
@@ -23,6 +24,8 @@ const whyBaspCards = [
 ]
 
 export default function Home() {
+  const { user } = useAuth()
+
   return (
     <>
       <Header />
@@ -48,7 +51,7 @@ export default function Home() {
               <div className="flex items-center gap-3 mb-8">
                 <span className="w-2 h-2 rounded-full bg-brass animate-pulse" />
                 <span className="font-mono text-[11px] tracking-[0.35em] text-[#5a5a55] uppercase">
-                  Inaugural Year · Bay Area
+                  Inaugural Year &#183; Bay Area
                 </span>
               </div>
 
@@ -62,20 +65,41 @@ export default function Home() {
               </p>
 
               <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                <Link
-                  to="/register"
-                  className="group relative inline-flex items-center gap-3 px-7 py-4 bg-foreground text-primary-foreground font-mono text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#2a2a2a] transition-all"
-                >
-                  Register your team
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
-                </Link>
-                <Link
-                  to="/competition"
-                  className="group inline-flex items-center gap-2 font-mono text-xs tracking-[0.25em] uppercase text-foreground border-b border-transparent hover:border-brass hover:text-brass transition-all pb-1"
-                >
-                  Explore the competition
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
-                </Link>
+                {user ? (
+                  <>
+                    <Link
+                      to="/profile"
+                      className="group relative inline-flex items-center gap-3 px-7 py-4 bg-foreground text-primary-foreground font-mono text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#2a2a2a] transition-all"
+                    >
+                      View your profile
+                      <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
+                    </Link>
+                    <Link
+                      to="/competition"
+                      className="group inline-flex items-center gap-2 font-mono text-xs tracking-[0.25em] uppercase text-foreground border-b border-transparent hover:border-brass hover:text-brass transition-all pb-1"
+                    >
+                      Explore the competition
+                      <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/register"
+                      className="group relative inline-flex items-center gap-3 px-7 py-4 bg-foreground text-primary-foreground font-mono text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#2a2a2a] transition-all"
+                    >
+                      Register your team
+                      <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
+                    </Link>
+                    <Link
+                      to="/competition"
+                      className="group inline-flex items-center gap-2 font-mono text-xs tracking-[0.25em] uppercase text-foreground border-b border-transparent hover:border-brass hover:text-brass transition-all pb-1"
+                    >
+                      Explore the competition
+                      <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 
@@ -143,7 +167,7 @@ export default function Home() {
             <div className="px-5 sm:px-8 py-6 sm:py-8">
               <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-2">Who</div>
               <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">California high school students</div>
-              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">Teams of 1–3</div>
+              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">Teams of 1&#8211;3</div>
             </div>
           </div>
         </section>
@@ -187,7 +211,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <span className="h-px w-12 sm:w-24 bg-brass/40" />
               <span className="font-mono text-[10px] tracking-[0.4em] text-brass uppercase">
-                Pitch · Prove · Prevail
+                Pitch &#183; Prove &#183; Prevail
               </span>
               <span className="h-px w-12 sm:w-24 bg-brass/40" />
             </div>
@@ -207,22 +231,34 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-obsidian via-obsidian/60 to-obsidian" />
           <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-8 text-center">
             <div className="font-mono text-[11px] tracking-[0.35em] text-brass uppercase mb-8">
-              November 14, 2026 · Tentative
+              November 14, 2026 &#183; Tentative
             </div>
             <h2 className="font-display text-foreground tracking-tighter-display leading-[0.92] text-balance text-5xl sm:text-7xl lg:text-8xl">
               Have an idea<br />
               <span className="italic text-brass">worth defending?</span>
             </h2>
             <p className="mt-8 max-w-xl mx-auto text-lg text-[#3a3a3a] leading-relaxed">
-              Registration will open soon for California high school students and teams of 1–3.
+              {user
+                ? "You're registered. Head to your profile to manage your team and submit your pitch deck."
+                : 'Registration is open for California high school students and teams of 1\u20133. Register your team to compete.'}
             </p>
-            <Link
-              to="/register"
-              className="group inline-flex items-center gap-3 px-9 py-5 bg-foreground text-primary-foreground font-mono text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#2a2a2a] transition-all"
-            >
-              Join the interest list
-              <span className="transition-transform group-hover:translate-x-1">→</span>
-            </Link>
+            {user ? (
+              <Link
+                to="/profile"
+                className="group inline-flex items-center gap-3 px-9 py-5 bg-foreground text-primary-foreground font-mono text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#2a2a2a] transition-all"
+              >
+                View your profile
+                <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
+              </Link>
+            ) : (
+              <Link
+                to="/register"
+                className="group inline-flex items-center gap-3 px-9 py-5 bg-foreground text-primary-foreground font-mono text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#2a2a2a] transition-all"
+              >
+                Register your team
+                <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
+              </Link>
+            )}
           </div>
         </section>
       </main>

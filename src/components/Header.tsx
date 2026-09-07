@@ -1,16 +1,21 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../lib/useAuth'
 
-const navLinks = [
+const baseLinks = [
   { href: '/', label: 'Home' },
   { href: '/competition', label: 'Competition' },
   { href: '/resources', label: 'Resources' },
   { href: '/about', label: 'About' },
-  { href: '/register', label: 'Register' },
 ]
 
 export default function Header() {
   const location = useLocation()
   const page = location.pathname
+  const { user, loading } = useAuth()
+
+  const navLinks = user
+    ? [...baseLinks, { href: '/profile', label: 'Profile' }]
+    : [...baseLinks, { href: '/login', label: 'Login' }]
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-obsidian/90 backdrop-blur-sm border-b border-warm">
@@ -26,7 +31,11 @@ export default function Header() {
               key={href}
               to={href}
               className={`text-sm font-semibold transition-colors duration-200 ${
-                page === href ? 'text-foreground' : 'text-muted-custom hover:text-foreground'
+                page === href
+                  ? 'text-foreground'
+                  : !user && href === '/login'
+                    ? 'text-muted-custom hover:text-brass transition-colors'
+                    : 'text-muted-custom hover:text-foreground'
               }`}
             >
               {label}
@@ -35,7 +44,7 @@ export default function Header() {
         </nav>
 
         <nav className="flex md:hidden items-center" aria-label="Primary navigation">
-          {navLinks.map(({ href, label }) => (
+          {loading ? null : navLinks.map(({ href, label }) => (
             <Link
               key={href}
               to={href}

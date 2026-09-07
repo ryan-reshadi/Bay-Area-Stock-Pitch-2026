@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../lib/useAuth'
 
 const event = {
   date: 'November 14, 2026',
@@ -6,13 +7,18 @@ const event = {
   address: '960 West Hedding Street, San Jose, CA 95126-1215',
 }
 
-const footerLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/competition', label: 'Competition' },
-  { href: '/register', label: 'Register' },
-]
-
 export default function Footer() {
+  const { user } = useAuth()
+  const authLink = user
+    ? { href: '/profile', label: 'Profile' }
+    : { href: '/login', label: 'Login' }
+
+  const footerLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/competition', label: 'Competition' },
+    authLink,
+  ]
+
   return (
     <footer className="bg-[#e8e3d6] border-t border-warm">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8 py-12">
