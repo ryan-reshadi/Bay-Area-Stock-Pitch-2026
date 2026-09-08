@@ -116,8 +116,8 @@ export default function Home() {
                 </div>
 
                 <div className="font-mono text-[#f4f1ea] leading-tight">
-                  <div className="text-2xl sm:text-3xl font-light tracking-tight">YOUR THESIS</div>
-                  <div className="text-3xl sm:text-4xl font-semibold tracking-tight text-brass">STARTS HERE</div>
+                  <div className="text-2xl sm:text-3xl font-light tracking-tight">BUY, SELL, OR HOLD</div>
+                  <div className="text-3xl sm:text-4xl font-semibold tracking-tight text-brass">YOUR STOCK</div>
                 </div>
 
                 <div className="my-6 h-24 relative overflow-hidden">
