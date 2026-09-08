@@ -61,7 +61,7 @@ export default function Home() {
               </h1>
 
               <p className="mt-8 max-w-xl text-base sm:text-lg leading-relaxed text-[#3a3a3a] font-body">
-                A stock pitch competition for California high school students ready to think like investors and present like professionals.
+                A stock pitch competition for Northern California high school students ready to think like investors and present like professionals.
               </p>
 
               <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
@@ -166,7 +166,7 @@ export default function Home() {
             </div>
             <div className="px-5 sm:px-8 py-6 sm:py-8">
               <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-2">Who</div>
-              <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">California high school students</div>
+              <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">Northern California high school students</div>
               <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">Teams of 1&#8211;3</div>
             </div>
           </div>
@@ -240,7 +240,7 @@ export default function Home() {
             <p className="mt-8 max-w-xl mx-auto text-lg text-[#3a3a3a] leading-relaxed">
               {user
                 ? "You're registered. Head to your profile to manage your team and submit your pitch deck."
-                : 'Registration is open for California high school students and teams of 1\u20133. Register your team to compete.'}
+                : 'Registration is open for Northern California high school students and teams of 1\u20133. Register your team to compete.'}
             </p>
             {user ? (
               <Link

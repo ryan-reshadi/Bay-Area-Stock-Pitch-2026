@@ -29,7 +29,7 @@ export default function Footer() {
               <span className="font-mono text-[10px] tracking-[0.3em] text-meta">EST. 2026</span>
             </Link>
             <p className="mt-4 text-xs text-[#6b6b63] leading-relaxed max-w-xs">
-              Bay Area Stock Pitch. A competition for California high school students ready to think like investors.
+              Bay Area Stock Pitch. A competition for Northern California high school students ready to think like investors.
             </p>
           </div>
 
