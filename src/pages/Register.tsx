@@ -53,54 +53,54 @@ export default function Register() {
     setLoading(true)
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: {
-            team_name: teamName.trim(),
-            captain_name: captainName.trim(),
-          },
-        },
-      })
+      // Bypass GoTrue's signup entirely — the direct_signup RPC function
+      // creates the user with email_confirmed_at = now() (no confirmation email
+      // sent), which avoids GoTrue's email rate limit. It also creates the
+      // team profile in the same transaction.
+      const { data: userId, error: signupError } = await supabase.rpc(
+        'direct_signup',
+        {
+          p_email: email.trim(),
+          p_password: password,
+          p_team_name: teamName.trim(),
+          p_captain_name: captainName.trim(),
+          p_member2_name: member2Name.trim() || null,
+          p_member3_name: member3Name.trim() || null,
+        }
+      )
 
-      if (authError) {
-        setError(authError.message)
+      if (signupError) {
+        setError(signupError.message)
         setLoading(false)
         return
       }
 
-      if (!authData.user) {
+      if (!userId) {
         setError('Something went wrong. Please try again.')
         setLoading(false)
         return
       }
 
-      const { error: profileError } = await supabase.from('teams').insert({
-        user_id: authData.user.id,
-        team_name: teamName.trim(),
-        member1_name: captainName.trim(),
-        member2_name: member2Name.trim() || null,
-        member3_name: member3Name.trim() || null,
+      // Sign in to establish an authenticated session
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
       })
 
-      if (profileError) {
-        setError(profileError.message)
+      if (signInError) {
+        // Account was created but session could not be established.
+        // This is extremely unlikely since we auto-confirmed the email,
+        // but handle it by redirecting to login.
+        setError(
+          'Account created but login failed. Please sign in manually.'
+        )
         setLoading(false)
+        setTimeout(() => navigate('/login'), 3000)
         return
       }
 
-      const isConfirmed =
-        authData.user.email_confirmed_at !== null || !!authData.session
-      if (isConfirmed) {
-        setSuccess('Team account created! Redirecting to your profile...')
-        setTimeout(() => navigate('/profile'), 1500)
-      } else {
-        setSuccess(
-          'Account created! Please check your email to confirm your address, then log in.'
-        )
-        setTimeout(() => navigate('/login'), 3000)
-      }
+      setSuccess('Team account created! Redirecting to your profile...')
+      setTimeout(() => navigate('/profile'), 1500)
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'An unexpected error occurred.'

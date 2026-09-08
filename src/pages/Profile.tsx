@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Upload, ExternalLink, Trash2, Save, File } from 'lucide-react'
 import Header from '../components/Header'
@@ -28,7 +28,16 @@ export default function Profile() {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    setTeamName(teamProfile?.team_name || '')
+    setMemberNames([
+      teamProfile?.member1_name || '',
+      teamProfile?.member2_name || '',
+      teamProfile?.member3_name || '',
+    ])
+  }, [teamProfile])
 
   if (!user) {
     return <Navigate to="/login" replace />
