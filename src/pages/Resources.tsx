@@ -5,11 +5,11 @@ import Footer from '../components/Footer'
 
 const requirements = [
   { num: '01', title: 'Public US Equity', body: 'Any company listed on NYSE or NASDAQ. ETFs, ADRs, private companies, and crypto are not eligible.' },
-  { num: '02', title: 'Long or Short Thesis', body: 'Both directions accepted. Short pitches must address borrow availability and short interest.' },
-  { num: '03', title: 'Publicly Available Information Only', body: 'All data and analysis must be sourced from publicly accessible information. No proprietary or inside information.' },
-  { num: '04', title: 'Original Student Work', body: 'The analysis and writing must be completed independently by the registered team members.' },
-  { num: '05', title: 'Independent Research Analyst Perspective', body: 'Present the pitch from the perspective of an objective, third-party analyst. Take a clear Buy, Sell, or Hold stance.' },
-  { num: '06', title: 'PowerPoint or PDF Submission', body: 'Email your deck as a .pptx or PDF to submission@basp.org by the submission deadline. Submissions are accepted by email only.' },
+  // { num: '02', title: 'Long or Short Thesis', body: 'Both directions accepted. Short pitches must address borrow availability and short interest.' },
+  { num: '02', title: 'Publicly Available Information Only', body: 'All data and analysis must be sourced from publicly accessible information. No proprietary or inside information.' },
+  { num: '03', title: 'Original Student Work', body: 'The analysis and writing must be completed independently by the registered team members.' },
+  { num: '04', title: 'Independent Research Analyst Perspective', body: 'Present the pitch from the perspective of an objective, third-party analyst. Take a clear Buy, Sell, or Hold stance.' },
+  // { num: '05', title: 'PowerPoint or PDF Submission', body: 'Email your deck as a .pptx or PDF to submission@basp.org by the submission deadline. Submissions are accepted by email only.' },
 ]
 
 const coverSlideFields = [
@@ -57,7 +57,6 @@ const scoringBreakdown = [
 const samplePitches = [
   { tag: 'Sample Pitch', title: 'XPEL, Inc. (XPEL)', body: 'A full example pitch deck. Use it as a model for structure, depth, and how to lay out your thesis, valuation, and risks.', href: 'https://www.laspc.org/examples/xpel-example.pdf' },
   { tag: 'Sample Pitch', title: 'ServiceNow (NOW)', body: 'Another complete worked example — a strong reference for building the business overview, valuation, and supporting analysis.', href: 'https://www.laspc.org/examples/servicenow-example.pdf' },
-  { tag: 'Short Thesis', title: 'DraftKings (DKNG)', body: 'An example short pitch — a useful reference for how to frame and support a bear case.', href: 'https://www.laspc.org/examples/dkng-short-example.pdf' },
 ]
 
 const exampleVideos = [
@@ -115,6 +114,23 @@ export default function Resources() {
                   <p className="text-sm leading-relaxed text-[#5a5a55] md:pl-10">{req.body}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-8 border border-warm-border bg-card p-8 sm:p-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+              <div className="max-w-2xl">
+                <div className="font-mono text-[11px] tracking-[0.3em] text-brass uppercase mb-4">Submission Format</div>
+                <h3 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">Upload your deck on this website.</h3>
+                <p className="text-sm leading-relaxed text-[#5a5a55]">
+                  Submit your completed pitch deck as a PowerPoint file (.pptx) or PDF (.pdf). Registered teams can upload their file from the Profile page before the submission deadline.
+                </p>
+              </div>
+              <Link
+                to="/profile"
+                className="inline-flex items-center gap-2 self-start lg:self-auto border border-brass px-5 py-3 font-mono text-[10px] tracking-[0.2em] text-brass uppercase hover:bg-brass hover:text-foreground transition-colors"
+              >
+                Go to profile
+                <ArrowUpRight size={14} />
+              </Link>
             </div>
           </div>
         </section>
