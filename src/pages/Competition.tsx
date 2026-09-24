@@ -13,26 +13,26 @@ const event = {
 const formatSteps = [
   {
     number: '01',
-    tag: 'Online',
-    title: 'Build the case.',
-    body: 'Choose a company, understand its business, and shape the research into a clear recommendation. Every team begins here.',
-    note: 'Submission details coming soon',
+    tag: 'In Person',
+    title: 'Arrive prepared.',
+    body: 'The competition begins on campus at Bellarmine. Every team comes ready to make its case directly to the judges with a clear investment thesis and a sharp presentation.',
+    note: 'Direct judge format',
     detail: {
-      h: 'Online submission round',
-      b: 'Submit your pitch online for review. The judges, submission deadline, finalist announcement date, and number of pitches advancing are coming soon.',
-      s: 'Coming soon',
+      h: 'In-person start',
+      b: 'Teams begin at Bellarmine on November 14, 2026 and present directly to the judging panel without a preliminary online round.',
+      s: 'On campus',
     },
   },
   {
     number: '02',
-    tag: 'In Person',
+    tag: 'Live Judging',
     title: 'Defend the idea.',
-    body: 'The top submissions move forward to present in person at Bellarmine. The final format, number advancing, and pitch timing are still being finalized.',
-    note: 'Final details coming soon',
+    body: 'Judges evaluate each team in real time, weighing the quality of the research, the clarity of the pitch, and the strength of the response to live questions.',
+    note: 'Live evaluation',
     detail: {
-      h: 'In-person final',
-      b: 'Advancing teams will present at Bellarmine on November 14, 2026. The number of finalists, pitch timing, and final format are coming soon.',
-      s: 'Coming soon',
+      h: 'Direct judging',
+      b: 'The panel evaluates teams as they present, with finalists and prize outcomes determined from the live judging experience on the day of the event.',
+      s: 'Live',
     },
   },
 ]
@@ -66,13 +66,13 @@ const scheduleCards = [
   {
     number: '01',
     title: 'Schedule',
-    body: 'The online submission deadline, finalist announcement, arrival time, and final run-of-show are coming soon.',
+    body: 'Arrival time, room assignments, and the final run-of-show are coming soon. The competition is planned to begin on campus at Bellarmine.',
     status: 'Coming soon',
   },
   {
     number: '02',
     title: 'On campus',
-    body: 'The Bellarmine location is confirmed. Check-in, parking, room assignments, and what to bring are coming soon.',
+    body: 'The Bellarmine location is confirmed. Check-in, parking, presentation logistics, and what to bring are coming soon.',
     status: 'Coming soon',
   },
 ]
@@ -106,11 +106,11 @@ export default function Competition() {
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
             <div className="section-index mb-6">02 <span>Competition Format</span></div>
             <h2 className="font-display text-foreground tracking-tighter-display leading-[0.92] text-balance text-5xl sm:text-7xl lg:text-8xl">
-              Two stages.<br />
+              One stage.<br />
               <span className="italic text-brass">One thesis.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              The competition starts with the work behind the pitch. Teams submit an online entry, make their case to the review panel, and compete for a place in the in-person final.
+              The competition begins in person at Bellarmine. Teams present directly to judges and make their case in the room, with live questions and live evaluation shaping the final outcome.
             </p>
 
             <div className="relative mt-16">
@@ -155,7 +155,7 @@ export default function Competition() {
               <span className="italic text-brass">Earn the room.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              Judges will evaluate submitted and/or presented pitches. Judge identities and scoring criteria are still being finalized.
+              Judges will evaluate each team’s live presentation, questioning, and investment reasoning. Judge identities and scoring criteria are still being finalized.
             </p>
 
             <div className="mt-12 grid md:grid-cols-2 gap-6">
@@ -203,7 +203,7 @@ export default function Competition() {
               <span className="italic text-brass">when it's ready.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              The in-person final is planned for Bellarmine College Preparatory, {event.address} on {event.date}. The full schedule and attendee logistics are coming soon.
+              The competition is planned for Bellarmine College Preparatory, {event.address} on {event.date}. The full event schedule and attendee logistics are coming soon.
             </p>
 
             <div className="mt-12 grid md:grid-cols-2 gap-6">
