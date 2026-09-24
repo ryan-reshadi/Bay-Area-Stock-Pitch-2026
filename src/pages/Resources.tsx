@@ -57,6 +57,7 @@ const scoringBreakdown = [
 const samplePitches = [
   { tag: 'Sample Pitch', title: 'XPEL, Inc. (XPEL)', body: 'A full example pitch deck. Use it as a model for structure, depth, and how to lay out your thesis, valuation, and risks.', href: 'https://www.laspc.org/examples/xpel-example.pdf' },
   { tag: 'Sample Pitch', title: 'ServiceNow (NOW)', body: 'Another complete worked example — a strong reference for building the business overview, valuation, and supporting analysis.', href: 'https://www.laspc.org/examples/servicenow-example.pdf' },
+  { tag: 'Competitive Reference', title: 'Competitor / Market Reference', body: 'A reference point for competitor research and presentation inspiration. Use it to understand how peers frame positioning, narrative, and visual structure.', href: 'https://canva.link/4e4rscs9nm1fih8' },
 ]
 
 const exampleVideos = [
@@ -217,10 +218,10 @@ export default function Resources() {
               <span className="italic text-brass">pitch decks.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              Three complete example decks to study before you build your own. Note how each structures the thesis, supports the valuation, and addresses risk. Each opens as a PDF in a new tab.
+              A set of example decks and reference materials to study before you build your own. Note how each structures the thesis, supports the valuation, and addresses risk. Each opens in a new tab.
             </p>
 
-            <div className="mt-12 grid md:grid-cols-3 gap-6">
+            <div className="mt-12 grid md:grid-cols-2 xl:grid-cols-3 gap-6">
               {samplePitches.map((sample) => (
                 <a
                   key={sample.title}
