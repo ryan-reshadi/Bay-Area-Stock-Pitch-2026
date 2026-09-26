@@ -141,8 +141,8 @@ export default function Home() {
             </div>
             <div className="px-5 sm:px-8 py-6 sm:py-8 border-b md:border-b-0 md:border-r border-warm">
               <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-2">Where</div>
-              <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">Bellarmine College Preparatory</div>
-              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">San Jose, California</div>
+              <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">Homestead High School</div>
+              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">Cupertino, California</div>
             </div>
             <div className="px-5 sm:px-8 py-6 sm:py-8">
               <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-2">Who</div>

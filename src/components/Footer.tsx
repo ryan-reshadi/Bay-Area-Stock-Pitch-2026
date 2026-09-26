@@ -4,8 +4,8 @@ const interestFormUrl = 'https://forms.gle/z3zxs7t4pj45auDH9'
 
 const event = {
   date: 'November 14, 2026',
-  venue: 'Bellarmine College Preparatory',
-  address: '960 West Hedding Street, San Jose, CA 95126-1215',
+  venue: 'Homestead High School',
+  address: '21370 Homestead Road, Cupertino, CA 95014',
 }
 
 export default function Footer() {
@@ -59,7 +59,8 @@ export default function Footer() {
           <div className="md:text-right">
             <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-3">Final</div>
             <div className="font-display text-lg text-foreground tracking-tight">{event.date}</div>
-            <div className="font-mono text-xs text-[#6b6b63] mt-1">{event.venue} · San Jose</div>
+            <div className="font-mono text-xs text-[#6b6b63] mt-1">{event.venue} · Cupertino</div>
+            <div className="font-mono text-[10px] text-[#6b6b63] mt-1">{event.address}</div>
           </div>
         </div>
 

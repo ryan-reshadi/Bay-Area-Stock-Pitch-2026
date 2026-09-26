@@ -6,8 +6,8 @@ import Footer from '../components/Footer'
 
 const event = {
   date: 'November 14, 2026',
-  venue: 'Bellarmine College Preparatory',
-  address: '960 West Hedding Street, San Jose, CA 95126-1215',
+  venue: 'Homestead High School',
+  address: '21370 Homestead Road, Cupertino, CA 95014',
 }
 
 const formatSteps = [
@@ -15,11 +15,11 @@ const formatSteps = [
     number: '01',
     tag: 'In Person',
     title: 'Arrive prepared.',
-    body: 'The competition begins on campus at Bellarmine. Every team comes ready to make its case directly to the judges with a clear investment thesis and a sharp presentation.',
+    body: 'The competition begins on campus at Homestead High School. Every team comes ready to make its case directly to the judges with a clear investment thesis and a sharp presentation.',
     note: 'Direct judge format',
     detail: {
       h: 'In-person start',
-      b: 'Teams begin at Bellarmine on November 14, 2026 and present directly to the judging panel without a preliminary online round.',
+      b: 'Teams begin at Homestead High School on November 14, 2026 and present directly to the judging panel without a preliminary online round.',
       s: 'On campus',
     },
   },
@@ -66,13 +66,13 @@ const scheduleCards = [
   {
     number: '01',
     title: 'Schedule',
-    body: 'Arrival time, room assignments, and the final run-of-show are coming soon. The competition is planned to begin on campus at Bellarmine.',
+    body: 'Arrival time, room assignments, and the final run-of-show are coming soon. The competition is planned to begin on campus at Homestead High School.',
     status: 'Coming soon',
   },
   {
     number: '02',
     title: 'On campus',
-    body: 'The Bellarmine location is confirmed. Check-in, parking, presentation logistics, and what to bring are coming soon.',
+    body: 'Homestead High School is the event location. Check-in, parking, presentation logistics, and what to bring are coming soon.',
     status: 'Coming soon',
   },
 ]
@@ -110,7 +110,7 @@ export default function Competition() {
               <span className="italic text-brass">One thesis.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              The competition begins in person at Bellarmine. Teams present directly to judges and make their case in the room, with live questions and live evaluation shaping the final outcome.
+              The competition begins in person at Homestead High School. Teams present directly to judges and make their case in the room, with live questions and live evaluation shaping the final outcome.
             </p>
 
             <div className="relative mt-16">
@@ -203,7 +203,7 @@ export default function Competition() {
               <span className="italic text-brass">when it's ready.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              The competition is planned for Bellarmine College Preparatory, {event.address} on {event.date}. The full event schedule and attendee logistics are coming soon.
+              The competition is planned for {event.venue}, {event.address} on {event.date}. The full event schedule and attendee logistics are coming soon.
             </p>
 
             <div className="mt-12 grid md:grid-cols-2 gap-6">
@@ -229,15 +229,15 @@ export default function Competition() {
                     <MapPin size={16} className="text-brass" />
                     <span className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase">Host Campus</span>
                   </div>
-                  <div className="font-display text-4xl sm:text-5xl text-foreground tracking-tight leading-none">Bellarmine</div>
-                  <div className="font-display text-3xl sm:text-4xl text-brass italic tracking-tight">College Prep</div>
+                  <div className="font-display text-4xl sm:text-5xl text-foreground tracking-tight leading-none">Homestead</div>
+                  <div className="font-display text-3xl sm:text-4xl text-brass italic tracking-tight">High School</div>
                 </div>
                 <div className="mt-10">
                   <div className="font-mono text-sm text-[#3a3a3a] leading-relaxed">
                     {event.address}
                   </div>
                   <a
-                    href="https://www.bcp.org/maps-and-directions"
+                    href="https://www.google.com/maps/search/?api=1&query=Homestead+High+School%2C+21370+Homestead+Road%2C+Cupertino%2C+CA+95014"
                     target="_blank"
                     rel="noreferrer"
                     className="group mt-6 inline-flex items-center gap-2 font-mono text-xs tracking-[0.2em] uppercase text-foreground border-b border-transparent hover:border-brass hover:text-brass transition-all pb-1"
@@ -245,17 +245,26 @@ export default function Competition() {
                     Campus directions
                     <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5" />
                   </a>
+                  <a
+                    href="https://hhs.fuhsd.org/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group mt-4 inline-flex items-center gap-2 font-mono text-xs tracking-[0.2em] uppercase text-foreground border-b border-transparent hover:border-brass hover:text-brass transition-all pb-1"
+                  >
+                    Homestead website
+                    <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+                  </a>
                   <p className="mt-6 text-xs text-[#6b6b63] leading-relaxed">Event logistics will be shared with registered teams.</p>
                 </div>
               </div>
               <div className="lg:col-span-7 min-h-[320px] border border-warm-border overflow-hidden bg-card">
                 <iframe
-                  title="Bellarmine campus map"
+                  title="Homestead High School campus map"
                   className="w-full h-full grayscale contrast-125 opacity-90"
                   style={{ minHeight: '320px', border: 0 }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=-121.9288%2C37.3588%2C-121.9188%2C37.3688&layer=mapnik&marker=37.3638%2C-121.9238"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=-122.053958%2C37.331292%2C-122.043958%2C37.341292&layer=mapnik&marker=37.336292%2C-122.048958"
                 />
               </div>
             </div>
