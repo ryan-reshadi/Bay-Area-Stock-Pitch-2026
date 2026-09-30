@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
-
-const interestFormUrl = 'https://forms.gle/z3zxs7t4pj45auDH9'
+import { useAuth } from '../lib/useAuth'
 
 const event = {
   date: 'November 14, 2026',
@@ -9,10 +8,15 @@ const event = {
 }
 
 export default function Footer() {
+  const { user } = useAuth()
+  const authLink = user
+    ? { href: '/profile', label: 'Profile' }
+    : { href: '/login', label: 'Login' }
+
   const footerLinks = [
     { href: '/', label: 'Home' },
     { href: '/competition', label: 'Competition' },
-    { href: interestFormUrl, label: 'Interested?' },
+    authLink,
   ]
 
   return (
@@ -33,25 +37,13 @@ export default function Footer() {
             <div className="flex flex-col gap-3">
               <span className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-1">Site</span>
               {footerLinks.map(({ href, label }) => (
-                href.startsWith('http') ? (
-                  <a
-                    key={href}
-                    href={href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-mono text-xs tracking-wider text-[#5a5a55] hover:text-brass transition-colors uppercase"
-                  >
-                    {label}
-                  </a>
-                ) : (
-                  <Link
-                    key={href}
-                    to={href}
-                    className="font-mono text-xs tracking-wider text-[#5a5a55] hover:text-brass transition-colors uppercase"
-                  >
-                    {label}
-                  </Link>
-                )
+                <Link
+                  key={href}
+                  to={href}
+                  className="font-mono text-xs tracking-wider text-[#5a5a55] hover:text-brass transition-colors uppercase"
+                >
+                  {label}
+                </Link>
               ))}
             </div>
           </div>

@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-
-const interestFormUrl = 'https://forms.gle/z3zxs7t4pj45auDH9'
+import { useAuth } from '../lib/useAuth'
 
 const baseLinks = [
   { href: '/', label: 'Home' },
@@ -12,8 +11,11 @@ const baseLinks = [
 export default function Header() {
   const location = useLocation()
   const page = location.pathname
+  const { user, loading } = useAuth()
 
-  const navLinks = [...baseLinks, { href: interestFormUrl, label: 'Interested?' }]
+  const navLinks = user
+    ? [...baseLinks, { href: '/profile', label: 'Profile' }]
+    : [...baseLinks, { href: '/login', label: 'Login' }]
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-obsidian/90 backdrop-blur-sm border-b border-warm">
@@ -25,63 +27,33 @@ export default function Header() {
 
         <nav className="hidden md:flex items-center gap-8" aria-label="Primary navigation">
           {navLinks.map(({ href, label }) => (
-            href.startsWith('http') ? (
-              <a
-                key={href}
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className={`text-sm font-semibold transition-all duration-200 ${
-                  label === 'Interested?'
-                    ? 'border border-black bg-black px-4 py-2 text-white hover:bg-white hover:text-black'
-                    : page === '/'
-                      ? 'text-foreground'
-                      : 'text-muted-custom hover:text-brass transition-colors'
-                }`}
-              >
-                {label}
-              </a>
-            ) : (
-              <Link
-                key={href}
-                to={href}
-                className={`text-sm font-semibold transition-colors duration-200 ${
-                  page === href ? 'text-foreground' : 'text-muted-custom hover:text-foreground'
-                }`}
-              >
-                {label}
-              </Link>
-            )
+            <Link
+              key={href}
+              to={href}
+              className={`text-sm font-semibold transition-colors duration-200 ${
+                page === href
+                  ? 'text-foreground'
+                  : !user && href === '/login'
+                    ? 'text-muted-custom hover:text-brass transition-colors'
+                    : 'text-muted-custom hover:text-foreground'
+              }`}
+            >
+              {label}
+            </Link>
           ))}
         </nav>
 
         <nav className="flex md:hidden items-center" aria-label="Primary navigation">
-          {navLinks.map(({ href, label }) => (
-            href.startsWith('http') ? (
-              <a
-                key={href}
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className={`text-xs font-semibold transition-all duration-200 ${
-                  label === 'Interested?'
-                    ? 'border border-black bg-black px-2 py-1.5 text-white hover:bg-white hover:text-black'
-                    : 'px-2 py-1 text-muted-custom hover:text-foreground'
-                }`}
-              >
-                {label}
-              </a>
-            ) : (
-              <Link
-                key={href}
-                to={href}
-                className={`text-xs font-semibold transition-colors duration-200 px-2 py-1 ${
-                  page === href ? 'text-foreground' : 'text-muted-custom hover:text-foreground'
-                }`}
-              >
-                {label}
-              </Link>
-            )
+          {loading ? null : navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              to={href}
+              className={`text-xs font-semibold transition-colors duration-200 px-2 py-1 ${
+                page === href ? 'text-foreground' : 'text-muted-custom hover:text-foreground'
+              }`}
+            >
+              {label}
+            </Link>
           ))}
         </nav>
       </div>
