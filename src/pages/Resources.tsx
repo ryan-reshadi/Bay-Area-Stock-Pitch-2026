@@ -102,7 +102,7 @@ export default function Resources() {
               <span className="italic text-brass">must include.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              Hard rules. Decks that violate any of these are returned for revision before the team’s live presentation; uncorrected violations can disqualify the team from continued judging.
+              Hard rules. Decks that violate any of these are returned for revision before the submission deadline; uncorrected violations disqualify the team.
             </p>
 
             <div className="mt-12 grid md:grid-cols-2 gap-px bg-warm border border-warm">
@@ -119,16 +119,19 @@ export default function Resources() {
 
             <div className="mt-8 border border-warm-border bg-card p-8 sm:p-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
               <div className="max-w-2xl">
-                <div className="font-mono text-[11px] tracking-[0.3em] text-brass uppercase mb-4">Competition day</div>
-                <h3 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">Present your pitch at Homestead</h3>
+                <div className="font-mono text-[11px] tracking-[0.3em] text-brass uppercase mb-4">Submission Format</div>
+                <h3 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">Upload your deck on this website.</h3>
                 <p className="text-sm leading-relaxed text-[#5a5a55]">
-                  May the best team win!
+                  Submit your completed pitch deck as a PowerPoint file (.pptx) or PDF (.pdf). Registered teams can upload their file from the Profile page before the submission deadline.
                 </p>
               </div>
-              <div className="inline-flex items-center gap-2 self-start lg:self-auto border border-brass px-5 py-3 font-mono text-[10px] tracking-[0.2em] text-brass uppercase">
-                Homestead
+              <Link
+                to="/profile"
+                className="inline-flex items-center gap-2 self-start lg:self-auto border border-brass px-5 py-3 font-mono text-[10px] tracking-[0.2em] text-brass uppercase hover:bg-brass hover:text-foreground transition-colors"
+              >
+                Go to profile
                 <ArrowUpRight size={14} />
-              </div>
+              </Link>
             </div>
           </div>
         </section>
