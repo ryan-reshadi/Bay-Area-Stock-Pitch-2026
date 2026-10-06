@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, describeAuthError } from '../lib/supabase'
 import { useAuth } from '../lib/useAuth'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -31,14 +31,14 @@ export default function Login() {
 
     try {
       const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       })
       if (authError) {
-        setError(authError.message)
+        setError(describeAuthError(authError))
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(describeAuthError(err))
     } finally {
       setLoading(false)
     }

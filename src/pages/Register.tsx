@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
-import { supabase } from '../lib/supabase'
+import { supabase, describeAuthError } from '../lib/supabase'
 import { useAuth } from '../lib/useAuth'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -19,8 +19,16 @@ export default function Register() {
   const [member3Name, setMember3Name] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [redirecting, setRedirecting] = useState(false)
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // A pending redirect must not fire after the page unmounts.
+  useEffect(() => {
+    return () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current)
+    }
+  }, [])
 
   if (authLoading) {
     return null
@@ -49,8 +57,11 @@ export default function Register() {
     if (!canSubmit) return
 
     setError(null)
-    setSuccess(null)
     setLoading(true)
+
+    // Tracks whether this submission ends in a navigation, so the finally block
+    // does not re-enable the form while a redirect is still pending.
+    let willRedirect = false
 
     try {
       // Bypass GoTrue's signup entirely — the direct_signup RPC function
@@ -70,14 +81,12 @@ export default function Register() {
       )
 
       if (signupError) {
-        setError(signupError.message)
-        setLoading(false)
+        setError(describeAuthError(signupError))
         return
       }
 
       if (!userId) {
         setError('Something went wrong. Please try again.')
-        setLoading(false)
         return
       }
 
@@ -88,25 +97,25 @@ export default function Register() {
       })
 
       if (signInError) {
-        // Account was created but session could not be established.
-        // This is extremely unlikely since we auto-confirmed the email,
-        // but handle it by redirecting to login.
-        setError(
-          'Account created but login failed. Please sign in manually.'
-        )
-        setLoading(false)
-        setTimeout(() => navigate('/login'), 3000)
+        // The account exists, so point the user at it. Keeping the form locked
+        // stops a resubmit that would clear this guidance and surface
+        // "Email address already registered" instead.
+        setError('Account created but login failed. Please sign in manually.')
+        willRedirect = true
+        setRedirecting(true)
+        redirectTimer.current = setTimeout(() => navigate('/login'), 3000)
         return
       }
 
-      setSuccess('Team account created! Redirecting to your profile...')
-      setTimeout(() => navigate('/profile'), 1500)
+      // Navigate explicitly rather than relying on onAuthStateChange, which may
+      // not have flushed its state update yet.
+      willRedirect = true
+      setRedirecting(true)
+      navigate('/profile')
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unexpected error occurred.'
-      )
+      setError(describeAuthError(err))
     } finally {
-      setLoading(false)
+      if (!willRedirect) setLoading(false)
     }
   }
 
@@ -283,22 +292,16 @@ export default function Register() {
                       </div>
                     )}
 
-                    {success && (
-                      <div className="p-3 border border-cyan-pulse/40 bg-cyan-pulse/10 text-cyan-pulse font-mono text-xs">
-                        {success}
-                      </div>
-                    )}
-
                     <button
                       type="submit"
-                      disabled={loading || !canSubmit}
+                      disabled={loading || redirecting || !canSubmit}
                       className={`group inline-flex items-center justify-center gap-2 w-full px-7 py-3.5 font-mono text-xs font-bold tracking-[0.25em] uppercase transition-all ${
-                        loading || !canSubmit
+                        loading || redirecting || !canSubmit
                           ? 'bg-[#2a3a2a] text-[#5a6a5a] cursor-not-allowed'
                           : 'bg-cyan-pulse text-[#1a261a] hover:bg-lime-hover cursor-pointer'
                       }`}
                       style={
-                        loading || !canSubmit
+                        loading || redirecting || !canSubmit
                           ? {}
                           : {
                               boxShadow:
@@ -306,7 +309,9 @@ export default function Register() {
                             }
                       }
                     >
-                      {loading ? 'Creating team...' : 'Create team account'}
+                      {loading || redirecting
+                        ? 'Creating team...'
+                        : 'Create team account'}
                     </button>
                   </form>
 

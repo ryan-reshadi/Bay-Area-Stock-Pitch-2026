@@ -4,15 +4,28 @@ import { Upload, ExternalLink, Trash2, Save, File } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useAuth } from '../lib/useAuth'
+import { describeAuthError } from '../lib/supabase'
 import {
-  upsertTeamProfile,
+  updateTeamProfile,
   uploadPitchDeck,
   deletePitchDeck,
   clearPitchDeckReference,
+  createPitchDeckViewUrl,
 } from '../lib/team'
 
 const ACCEPTED_EXTENSIONS = ['pptx', 'ppt', 'pdf']
 const MAX_FILE_SIZE_MB = 50
+
+function formatSubmittedAt(value?: string | null): string {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  return date.toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
+}
 
 export default function Profile() {
   const { user, teamProfile, teamProfileLoading, refreshTeamProfile, signOut } =
@@ -28,6 +41,10 @@ export default function Profile() {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [resolvedDeck, setResolvedDeck] = useState<{
+    key: string
+    url: string | null
+  } | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
@@ -38,6 +55,50 @@ export default function Profile() {
       teamProfile?.member3_name || '',
     ])
   }, [teamProfile])
+
+  const hasPitchDeck = Boolean(
+    teamProfile?.pitch_deck_filename || teamProfile?.pitch_deck_url
+  )
+
+  // Key the resolved link to the stored deck path, so a new upload invalidates
+  // it while an unrelated team-name save does not trigger a re-resolve.
+  const deckKey = teamProfile?.pitch_deck_url ?? ''
+  const deckResolved = deckKey !== '' && resolvedDeck?.key === deckKey
+
+  // Prefer the freshly signed URL; fall back to the stored public URL so a
+  // public bucket keeps working. Derived rather than stored so a removed deck
+  // cannot leave a stale link behind.
+  const pitchDeckLink: string | undefined = hasPitchDeck
+    ? deckResolved
+      ? resolvedDeck?.url || teamProfile?.pitch_deck_url || undefined
+      : undefined
+    : undefined
+
+  const viewUrlLoading = hasPitchDeck && !deckResolved
+
+  // Resolve a link that actually opens. The URL stored on the teams row is a
+  // public URL and only resolves while the bucket is public, so prefer a
+  // short-lived signed URL generated from the caller's own folder.
+  useEffect(() => {
+    if (!user || !hasPitchDeck) return
+
+    let active = true
+
+    createPitchDeckViewUrl(user.id)
+      .then(({ data }) => {
+        if (active) setResolvedDeck({ key: deckKey, url: data })
+      })
+      .catch((err) => {
+        console.error('Could not resolve pitch deck link:', err)
+        // Resolve to null so the UI reports a missing link rather than
+        // spinning forever.
+        if (active) setResolvedDeck({ key: deckKey, url: null })
+      })
+
+    return () => {
+      active = false
+    }
+  }, [user, hasPitchDeck, deckKey])
 
   if (!user) {
     return <Navigate to="/login" replace />
@@ -64,23 +125,23 @@ export default function Profile() {
     }
 
     try {
-      const result = await upsertTeamProfile(user!.id, {
+      const { data, error: saveError } = await updateTeamProfile(user!.id, {
         team_name: teamName.trim(),
         member1_name: memberNames[0]?.trim() || null,
         member2_name: memberNames[1]?.trim() || null,
         member3_name: memberNames[2]?.trim() || null,
       })
 
-      if (!result) {
-        setError('Failed to save profile. Please try again.')
+      if (saveError || !data) {
+        setError(
+          describeAuthError(saveError ?? new Error('No data returned when saving the profile.'))
+        )
       } else {
         setSuccess('Profile updated successfully.')
         await refreshTeamProfile()
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unexpected error occurred.'
-      )
+      setError(describeAuthError(err))
     } finally {
       setLoading(false)
     }
@@ -111,22 +172,40 @@ export default function Profile() {
     setUploading(true)
 
     try {
-      const result = await uploadPitchDeck(user!.id, file)
-
-      if (!result) {
-        setError('Failed to upload pitch deck. Please try again.')
-      } else {
-        await upsertTeamProfile(user!.id, {
-          pitch_deck_url: result.url,
-          pitch_deck_filename: result.filename,
-        })
-        setSuccess(`Pitch deck uploaded: ${result.filename}`)
-        await refreshTeamProfile()
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unexpected error occurred.'
+      const { data: uploaded, error: uploadError } = await uploadPitchDeck(
+        user!.id,
+        file
       )
+
+      if (uploadError || !uploaded) {
+        setError(
+          describeAuthError(
+            uploadError ?? new Error('No data returned when uploading.')
+          )
+        )
+        return
+      }
+
+      // The file is in storage but the teams row is not yet updated. Check this
+      // result too: previously it was discarded, so a failed database write was
+      // still reported to the user as a successful submission.
+      const { error: linkError } = await updateTeamProfile(user!.id, {
+        pitch_deck_url: uploaded.url,
+        pitch_deck_filename: uploaded.filename,
+      })
+
+      if (linkError) {
+        setError(
+          `The file uploaded, but saving its reference failed. ${describeAuthError(linkError)}`
+        )
+        await refreshTeamProfile()
+        return
+      }
+
+      setSuccess(`Pitch deck uploaded: ${uploaded.filename}`)
+      await refreshTeamProfile()
+    } catch (err) {
+      setError(describeAuthError(err))
     } finally {
       setUploading(false)
       if (fileInputRef.current) {
@@ -149,14 +228,25 @@ export default function Profile() {
     setUploading(true)
 
     try {
-      await deletePitchDeck(user.id)
-      await clearPitchDeckReference(user.id)
+      const { error: deleteError } = await deletePitchDeck(user.id)
+      if (deleteError) {
+        setError(describeAuthError(deleteError))
+        return
+      }
+
+      const { error: clearError } = await clearPitchDeckReference(user.id)
+      if (clearError) {
+        setError(
+          `The file was deleted, but its reference could not be cleared. ${describeAuthError(clearError)}`
+        )
+        await refreshTeamProfile()
+        return
+      }
+
       setSuccess('Pitch deck removed.')
       await refreshTeamProfile()
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to remove pitch deck.'
-      )
+      setError(describeAuthError(err))
     } finally {
       setUploading(false)
     }
@@ -300,55 +390,88 @@ export default function Profile() {
                         className="w-full px-6 py-8 flex flex-col items-center justify-center gap-3 font-mono text-xs text-[#8a9a8a] hover:text-[#f4f1ea] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Upload size={24} className="text-brass" />
-                        <span>{uploading ? 'Uploading...' : 'Choose a file'}</span>
+                        <span>
+                          {uploading
+                            ? 'Uploading...'
+                            : hasPitchDeck
+                              ? 'Replace with a new file'
+                              : 'Choose a file'}
+                        </span>
                       </button>
                     </div>
                   </div>
 
-                  {(teamProfile?.pitch_deck_url ||
-                    teamProfile?.pitch_deck_filename) && (
-                    <div className="border border-[#2f3d2a] bg-[#141d14] p-5">
+                  <div className="border border-[#2f3d2a] bg-[#141d14] p-5">
                       <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-3">
                         Current submission
                       </div>
-                      <div className="flex items-center justify-between">
+
+                      {hasPitchDeck ? (
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <File size={20} className="text-brass shrink-0" />
+                            <div className="min-w-0">
+                              <span className="font-mono text-sm text-[#f4f1ea] break-all">
+                                {teamProfile?.pitch_deck_filename ||
+                                  'pitch-deck-file'}
+                              </span>
+                              <div className="font-mono text-[10px] tracking-[0.2em] text-[#8a9a8a]">
+                                {formatSubmittedAt(teamProfile?.updated_at)
+                                  ? `Submitted ${formatSubmittedAt(teamProfile?.updated_at)}`
+                                  : 'Attached to your account'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            {pitchDeckLink && (
+                              <a
+                                href={pitchDeckLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.2em] text-brass uppercase hover:underline"
+                              >
+                                <ExternalLink size={12} />
+                                View
+                              </a>
+                            )}
+                            <button
+                              type="button"
+                              onClick={handleRemovePitchDeck}
+                              disabled={uploading}
+                              className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.2em] text-[#8a9a8a] hover:text-red-400 transition-colors disabled:opacity-50"
+                            >
+                              <Trash2 size={12} />
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
                         <div className="flex items-center gap-3">
-                          <File size={20} className="text-brass" />
+                          <File size={20} className="text-[#5a6a5a] shrink-0" />
                           <div>
-                            <span className="font-mono text-sm text-[#f4f1ea]">
-                              {teamProfile?.pitch_deck_filename ||
-                                'pitch-deck-file'}
+                            <span className="font-mono text-sm text-[#8a9a8a]">
+                              No pitch deck attached yet
                             </span>
-                            <div className="font-mono text-[10px] tracking-[0.2em] text-[#8a9a8a]">
-                              Uploaded
+                            <div className="font-mono text-[10px] tracking-[0.2em] text-[#5a6a5a]">
+                              Upload one above to submit your entry.
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {teamProfile?.pitch_deck_url && (
-                            <a
-                              href={teamProfile.pitch_deck_url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.2em] text-brass uppercase hover:underline"
-                            >
-                              <ExternalLink size={12} />
-                              View
-                            </a>
-                          )}
-                          <button
-                            type="button"
-                            onClick={handleRemovePitchDeck}
-                            disabled={uploading}
-                            className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.2em] text-[#8a9a8a] hover:text-red-400 transition-colors disabled:opacity-50"
-                          >
-                            <Trash2 size={12} />
-                            Remove
-                          </button>
+                      )}
+
+                      {hasPitchDeck && viewUrlLoading && (
+                        <div className="mt-3 font-mono text-[10px] tracking-[0.2em] text-[#5a6a5a]">
+                          Preparing your link...
                         </div>
-                      </div>
+                      )}
+
+                      {hasPitchDeck && !viewUrlLoading && !pitchDeckLink && (
+                        <div className="mt-3 font-mono text-[10px] tracking-[0.2em] text-red-400">
+                          Could not generate a link to your file. Try the Remove
+                          button and upload it again.
+                        </div>
+                      )}
                     </div>
-                  )}
                 </div>
 
                 {error && (
