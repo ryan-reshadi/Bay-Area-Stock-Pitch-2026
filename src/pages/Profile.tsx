@@ -8,6 +8,7 @@ import { describeAuthError } from '../lib/supabase'
 import {
   updateTeamProfile,
   uploadPitchDeck,
+  removeSupersededPitchDecks,
   deletePitchDeck,
   clearPitchDeckReference,
   createPitchDeckViewUrl,
@@ -202,6 +203,7 @@ export default function Profile() {
         return
       }
 
+      await removeSupersededPitchDecks(user!.id, uploaded.path)
       setSuccess(`Pitch deck uploaded: ${uploaded.filename}`)
       await refreshTeamProfile()
     } catch (err) {
