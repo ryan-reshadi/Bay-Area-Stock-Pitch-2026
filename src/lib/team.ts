@@ -61,15 +61,12 @@ export async function updateTeamProfile(
 export async function uploadPitchDeck(
   userId: string,
   file: File
-): Promise<OperationResult<{ url: string; filename: string }>> {
+): Promise<OperationResult<{ url: string; filename: string; path: string }>> {
   // Strip anything that is not filename-safe. The original name is preserved in
   // the teams row, so this only affects the storage key.
   const safeName = (file.name || 'pitch-deck').replace(/[^a-zA-Z0-9._-]/g, '_')
   const filePath = `${userId}/${Date.now()}-${safeName}`
 
-  // upsert is deliberately false: the path is unique per upload, so `upsert:
-  // true` never actually overwrote anything and every resubmission left the
-  // previous file behind as an orphan.
   const { error: uploadError } = await supabase.storage
     .from('pitch-decks')
     .upload(filePath, file, {
@@ -85,16 +82,38 @@ export async function uploadPitchDeck(
     .from('pitch-decks')
     .getPublicUrl(filePath)
 
-  // Only now that the new file is safely stored, drop the previous submission
-  // so a team has exactly one pitch deck on file. Doing this before the upload
-  // would risk destroying the old file if the upload then failed.
-  const { data: existing } = await supabase.storage
+  return {
+    data: {
+      url: urlData.publicUrl,
+      filename: file.name,
+      path: filePath,
+    },
+    error: null,
+  }
+}
+
+/**
+ * Removes the prior uploads only after the new storage path has been saved to
+ * the team row. If saving that reference fails, the previous submission stays
+ * available.
+ */
+export async function removeSupersededPitchDecks(
+  userId: string,
+  keepPath: string
+): Promise<void> {
+  const { data: existing, error: listError } = await supabase.storage
     .from('pitch-decks')
     .list(userId)
 
+  if (listError) {
+    console.error('Could not list previous pitch decks:', listError)
+    return
+  }
+
   const stale = (existing ?? [])
-    .filter((object) => `${userId}/${object.name}` !== filePath)
+    .filter((object) => object.name)
     .map((object) => `${userId}/${object.name}`)
+    .filter((path) => path !== keepPath)
 
   if (stale.length > 0) {
     const { error: cleanupError } = await supabase.storage
@@ -102,28 +121,15 @@ export async function uploadPitchDeck(
       .remove(stale)
 
     if (cleanupError) {
-      // The new deck is stored and usable, so this is not worth failing the
-      // upload over. Log it instead.
       console.error('Could not remove previous pitch deck(s):', cleanupError)
     }
   }
-
-  return {
-    data: {
-      url: urlData.publicUrl,
-      filename: file.name,
-    },
-    error: null,
-  }
 }
-
 /**
  * Resolves a link the browser can actually open for the stored pitch deck.
  *
- * `pitch_deck_url` in the teams row is a public URL, which only works while the
- * bucket is public. The bucket is created private by
- * 20260902_create_pitch_deck_storage.sql, so prefer a short-lived signed URL
- * and fall back to the stored public URL when signing is unavailable.
+ * Pitch decks are stored in a private bucket. Generate a short-lived signed URL
+ * for the caller's own object; never fall back to a public URL.
  *
  * The object is located by listing the caller's folder rather than trusting the
  * stored URL, so the link still works if the stored path is stale.
@@ -156,12 +162,10 @@ export async function createPitchDeckViewUrl(
     .createSignedUrl(`${userId}/${latest.name}`, 3600)
 
   if (signError || !signed?.signedUrl) {
-    // Public bucket, or signing not permitted: the public URL still resolves.
-    const { data: publicUrl } = supabase.storage
-      .from('pitch-decks')
-      .getPublicUrl(`${userId}/${latest.name}`)
-
-    return { data: publicUrl.publicUrl, error: null }
+    return {
+      data: null,
+      error: signError ?? new Error('Could not generate a signed pitch deck URL.'),
+    }
   }
 
   return { data: signed.signedUrl, error: null }
