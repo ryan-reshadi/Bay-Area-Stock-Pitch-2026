@@ -157,12 +157,12 @@ export default function Home() {
             <div className="px-5 sm:px-8 py-6 sm:py-8 border-b md:border-b-0 md:border-r border-warm">
               <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-2">When</div>
               <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">November 14, 2026</div>
-              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">Tentative</div>
+              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">9:00 AM–1:00 PM</div>
             </div>
             <div className="px-5 sm:px-8 py-6 sm:py-8 border-b md:border-b-0 md:border-r border-warm">
               <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-2">Where</div>
-              <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">Homestead High School</div>
-              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">Cupertino, California</div>
+              <div className="text-lg sm:text-xl font-display text-foreground tracking-tight">Menlo High School</div>
+              <div className="mt-1 font-mono text-xs tracking-wider text-brass uppercase">Atherton, California</div>
             </div>
             <div className="px-5 sm:px-8 py-6 sm:py-8">
               <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-2">Who</div>
@@ -231,7 +231,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-obsidian via-obsidian/60 to-obsidian" />
           <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-8 text-center">
             <div className="font-mono text-[11px] tracking-[0.35em] text-brass uppercase mb-8">
-              November 14, 2026 &#183; Tentative
+              November 14, 2026 &#183; 9:00 AM–1:00 PM
             </div>
             <h2 className="font-display text-foreground tracking-tighter-display leading-[0.92] text-balance text-5xl sm:text-7xl lg:text-8xl">
               Have an idea<br />

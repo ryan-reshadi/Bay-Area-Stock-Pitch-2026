@@ -3,8 +3,9 @@ import { useAuth } from '../lib/useAuth'
 
 const event = {
   date: 'November 14, 2026',
-  venue: 'Homestead High School',
-  address: '21370 Homestead Road, Cupertino, CA 95014',
+  time: '9:00 AM–1:00 PM',
+  venue: 'Menlo High School',
+  address: '555 Middlefield Road, Atherton, CA 94027',
 }
 
 export default function Footer() {
@@ -51,7 +52,8 @@ export default function Footer() {
           <div className="md:text-right">
             <div className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase mb-3">Final</div>
             <div className="font-display text-lg text-foreground tracking-tight">{event.date}</div>
-            <div className="font-mono text-xs text-[#6b6b63] mt-1">{event.venue} · Cupertino</div>
+            <div className="font-mono text-xs text-[#6b6b63] mt-1">{event.time}</div>
+            <div className="font-mono text-xs text-[#6b6b63] mt-1">{event.venue} · Atherton</div>
             <div className="font-mono text-[10px] text-[#6b6b63] mt-1">{event.address}</div>
           </div>
         </div>

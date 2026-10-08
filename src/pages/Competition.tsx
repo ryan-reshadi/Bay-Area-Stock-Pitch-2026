@@ -6,8 +6,9 @@ import Footer from '../components/Footer'
 
 const event = {
   date: 'November 14, 2026',
-  venue: 'Homestead High School',
-  address: '21370 Homestead Road, Cupertino, CA 95014',
+  time: '9:00 AM–1:00 PM',
+  venue: 'Menlo High School',
+  address: '555 Middlefield Road, Atherton, CA 94027',
 }
 
 const formatSteps = [
@@ -27,12 +28,12 @@ const formatSteps = [
     number: '02',
     tag: 'In Person',
     title: 'Defend the idea.',
-    body: 'The top submissions move forward to present in person at Homestead High School. The final format, number advancing, and pitch timing are still being finalized.',
-    note: 'Final details coming soon',
+    body: 'The top submissions move forward to present in person at Menlo High School. Finalist timing and presentation logistics are set for the live day from 9:00 AM to 1:00 PM.',
+    note: 'Live final details',
     detail: {
       h: 'In-person final',
-      b: 'Advancing teams will present at Homestead High School on November 14, 2026. The number of finalists, pitch timing, and final format are coming soon.',
-      s: 'Coming soon',
+      b: 'Advancing teams will present at Menlo High School on November 14, 2026, from 9:00 AM to 1:00 PM. Finalist timing and presentation logistics will be shared with teams ahead of the event.',
+      s: 'Live final',
     },
   },
 ]
@@ -66,14 +67,14 @@ const scheduleCards = [
   {
     number: '01',
     title: 'Schedule',
-    body: 'Arrival time, room assignments, and the final run-of-show are coming soon. The competition is planned to begin on campus at Homestead High School.',
-    status: 'Coming soon',
+    body: 'The event runs from 9:00 AM to 1:00 PM on campus at Menlo High School. Arrival, room assignments, and the final run-of-show will be shared ahead of the day.',
+    status: 'On schedule',
   },
   {
     number: '02',
     title: 'On campus',
-    body: 'The Homestead High School location is confirmed. Check-in, parking, presentation logistics, and what to bring are coming soon.',
-    status: 'Coming soon',
+    body: 'Menlo High School is the confirmed venue. Check-in, parking, presentation logistics, and what to bring will be communicated directly to participating teams.',
+    status: 'Confirmed',
   },
 ]
 
@@ -110,7 +111,7 @@ export default function Competition() {
               <span className="italic text-brass">One thesis.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              The competition begins in person at Homestead High School. Teams present directly to judges and make their case in the room, with live questions and live evaluation shaping the final outcome.
+              The competition begins in person at Menlo High School from 9:00 AM to 1:00 PM. Teams present directly to judges and make their case in the room, with live questions and live evaluation shaping the final outcome.
             </p>
 
             <div className="relative mt-16">
@@ -203,7 +204,7 @@ export default function Competition() {
               <span className="italic text-brass">when it's ready.</span>
             </h2>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#3a3a3a]">
-              The competition is planned for Homestead High School, {event.address} on {event.date}. The full event schedule and attendee logistics are coming soon.
+              The competition is planned for Menlo High School, {event.address}, on {event.date} from {event.time}. The full event schedule and attendee logistics are coming soon.
             </p>
 
             <div className="mt-12 grid md:grid-cols-2 gap-6">
@@ -229,7 +230,7 @@ export default function Competition() {
                     <MapPin size={16} className="text-brass" />
                     <span className="font-mono text-[10px] tracking-[0.3em] text-meta uppercase">Host Campus</span>
                   </div>
-                  <div className="font-display text-4xl sm:text-5xl text-foreground tracking-tight leading-none">Homestead</div>
+                  <div className="font-display text-4xl sm:text-5xl text-foreground tracking-tight leading-none">Menlo</div>
                   <div className="font-display text-3xl sm:text-4xl text-brass italic tracking-tight">High School</div>
                 </div>
                 <div className="mt-10">
@@ -237,7 +238,7 @@ export default function Competition() {
                     {event.address}
                   </div>
                   <a
-                    href="https://www.google.com/maps/search/?api=1&query=Homestead+High+School%2C+21370+Homestead+Road%2C+Cupertino%2C+CA+95014"
+                    href="https://www.google.com/maps/search/?api=1&query=Menlo+High+School%2C+555+Middlefield+Road%2C+Atherton%2C+CA+94027"
                     target="_blank"
                     rel="noreferrer"
                     className="group mt-6 inline-flex items-center gap-2 font-mono text-xs tracking-[0.2em] uppercase text-foreground border-b border-transparent hover:border-brass hover:text-brass transition-all pb-1"
@@ -246,12 +247,12 @@ export default function Competition() {
                     <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5" />
                   </a>
                   <a
-                    href="https://hhs.fuhsd.org/"
+                    href="https://www.menloatherton.k12.ca.us/"
                     target="_blank"
                     rel="noreferrer"
                     className="group mt-4 inline-flex items-center gap-2 font-mono text-xs tracking-[0.2em] uppercase text-foreground border-b border-transparent hover:border-brass hover:text-brass transition-all pb-1"
                   >
-                    Homestead website
+                    Menlo website
                     <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5" />
                   </a>
                   <p className="mt-6 text-xs text-[#6b6b63] leading-relaxed">Event logistics will be shared with registered teams.</p>
@@ -259,12 +260,12 @@ export default function Competition() {
               </div>
               <div className="lg:col-span-7 min-h-[320px] border border-warm-border overflow-hidden bg-card">
                 <iframe
-                  title="Homestead High School campus map"
+                  title="Menlo High School campus map"
                   className="w-full h-full grayscale contrast-125 opacity-90"
                   style={{ minHeight: '320px', border: 0 }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=-122.053958%2C37.331292%2C-122.043958%2C37.341292&layer=mapnik&marker=37.336292%2C-122.048958"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=-122.236%2C37.451%2C-122.216%2C37.471&layer=mapnik&marker=37.461%2C-122.226"
                 />
               </div>
             </div>
